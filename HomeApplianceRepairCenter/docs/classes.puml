@@ -1,0 +1,38 @@
+@startuml
+' Render with PlantUML (https://www.plantuml.com/plantuml) - simplified class diagram
+interface IRepairable {
+  +SerialNumber : string
+  +Status : RepairStatus
+  +CalculateRepairCost() : decimal
+  +StartRepair()
+  +CompleteRepair()
+  +DeliverToCustomer(date)
+  +GetSummary() : string
+}
+abstract class Appliance {
+  -_serialNumber : string
+  -_status : RepairStatus
+  +SerialNumber : string
+  +Status : RepairStatus
+  +LaborHours : decimal
+  +PartsCost : decimal
+  +{abstract} ApplianceType : string
+  +{abstract} CalculateRepairCost() : decimal
+  +event StatusChanged
+  +event DeliveryDelayed
+  +CheckDelay(today) : bool
+}
+class Refrigerator { +CapacityLiters +HasFreezer +CompressorReplaced }
+class WashingMachine { +LoadCapacityKg +IsFrontLoad +DrumReplaced }
+class AirConditioner { +CoolingCapacityBtu +IsInverter +RequiresOnSiteVisit }
+class RepairCenter { -_appliances : List<Appliance> +AddAppliance() +GetTotalCost() +PrintAllStatuses() +CheckDelays() }
+class ValidationHelper <<static>>
+class RepairStatistics <<static>>
+IRepairable <|.. Appliance
+Appliance <|-- Refrigerator
+Appliance <|-- WashingMachine
+Appliance <|-- AirConditioner
+RepairCenter o-- "0..*" Appliance
+Appliance ..> ValidationHelper : uses
+Appliance ..> RepairStatistics : updates
+@enduml

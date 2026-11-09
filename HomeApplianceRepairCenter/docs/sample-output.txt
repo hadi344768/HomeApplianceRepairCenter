@@ -1,0 +1,66 @@
+
+=== 1) Registering appliances ===
+
+=== 2) Technician reports (labor hours, parts, special work) ===
+  [RF-2026-0001] Refrigerator     Samsung   Ahmad        Received    Cost:  250.00 USD | 350 L, freezer: yes
+  [RF-2026-0002] Refrigerator     LG        Rima         Received    Cost:   60.50 USD | 280 L, freezer: no
+  [WM-2026-0001] Washing Machine  Bosch     Samer        Received    Cost:  208.80 USD | 8 kg, front-load
+  [WM-2026-0002] Washing Machine  Zanussi   Lina         Received    Cost:   27.00 USD | 6 kg, top-load
+  [AC-2026-0001] Air Conditioner  Gree      Khaled       Received    Cost:  190.00 USD | 24000 BTU, inverter
+  [AC-2026-0002] Air Conditioner  Midea     Hala         Received    Cost:   58.00 USD | 12000 BTU, standard
+
+=== 3) Repair workflow (events are raised automatically) ===
+  >> [STATUS] RF-2026-0001: Received -> UnderRepair.
+  >> [STATUS] Repair COMPLETED for RF-2026-0001. Please call Ahmad. Amount due: 250.00 USD.
+  >> [STATUS] WM-2026-0001: Received -> UnderRepair.
+  >> [STATUS] AC-2026-0001: Received -> UnderRepair.
+  >> [STATUS] Repair COMPLETED for AC-2026-0001. Please call Khaled. Amount due: 190.00 USD.
+  >> [STATUS] RF-2026-0001 delivered to Ahmad. Final cost: 250.00 USD.
+  >> [STATUS] WM-2026-0002: Received -> UnderRepair.
+
+=== 4) Delay check on 2026-11-08 ===
+  >> [DELAY ] WM-2026-0001 of Samer is 6 day(s) late (promised 2026-11-02).
+  >> [DELAY ] AC-2026-0001 of Khaled is 9 day(s) late (promised 2026-10-30).
+  Late appliances: 2
+
+=== 5) Current state of every appliance (polymorphic report) ===
+  [RF-2026-0001] Refrigerator     Samsung   Ahmad        Delivered   Cost:  250.00 USD | 350 L, freezer: yes
+  [RF-2026-0002] Refrigerator     LG        Rima         Received    Cost:   60.50 USD | 280 L, freezer: no
+  [WM-2026-0001] Washing Machine  Bosch     Samer        UnderRepair Cost:  208.80 USD | 8 kg, front-load
+  [WM-2026-0002] Washing Machine  Zanussi   Lina         UnderRepair Cost:   27.00 USD | 6 kg, top-load
+  [AC-2026-0001] Air Conditioner  Gree      Khaled       Repaired    Cost:  190.00 USD | 24000 BTU, inverter
+  [AC-2026-0002] Air Conditioner  Midea     Hala         Received    Cost:   58.00 USD | 12000 BTU, standard
+
+=== 6) Totals ===
+  Total accrued cost of all appliances : 794.30 USD
+  Cost of repaired, waiting for pickup : 190.00 USD
+
+=== 7) Static statistics (RepairStatistics) ===
+  Registered appliances : 6
+  Still in maintenance  : 4
+  Repaired (all)        : 2
+  Awaiting pickup       : 1
+  Revenue collected     : 250.00 USD
+
+=== 8) Protection tests (all must be rejected) ===
+  Invalid serial number: rejected -> Serial number must look like RF-2026-0001. (Parameter 'serialNumber')
+  Wrong prefix for type : rejected -> A washing machine serial number must start with WM-. (Parameter 'serialNumber')
+  Delivery before reception: rejected -> Expected delivery date cannot be before the reception date. (Parameter 'expectedDeliveryDate')
+  Edit a delivered appliance: rejected -> The appliance was delivered; its data is locked.
+  Deliver before repair: rejected -> Cannot deliver an appliance in status UnderRepair.
+  Negative labor hours: rejected -> Labor hours cannot be negative. (Parameter 'value')
+  Duplicate serial number: rejected -> An appliance with serial RF-2026-0001 already exists.
+  TryParseDate("2026-13-40") -> False
+  TryParseDate("2026-11-12") -> True
+  Registered appliances after the rejected attempts: 6 (unchanged)
+
+=== 9) Notification log kept by the center ===
+  [STATUS] RF-2026-0001: Received -> UnderRepair.
+  [STATUS] Repair COMPLETED for RF-2026-0001. Please call Ahmad. Amount due: 250.00 USD.
+  [STATUS] WM-2026-0001: Received -> UnderRepair.
+  [STATUS] AC-2026-0001: Received -> UnderRepair.
+  [STATUS] Repair COMPLETED for AC-2026-0001. Please call Khaled. Amount due: 190.00 USD.
+  [STATUS] RF-2026-0001 delivered to Ahmad. Final cost: 250.00 USD.
+  [STATUS] WM-2026-0002: Received -> UnderRepair.
+  [DELAY ] WM-2026-0001 of Samer is 6 day(s) late (promised 2026-11-02).
+  [DELAY ] AC-2026-0001 of Khaled is 9 day(s) late (promised 2026-10-30).
